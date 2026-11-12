@@ -1,0 +1,6 @@
+.build/
+.swiftpm/
+.DS_Store
+# Pre-rebuild copies kept for reference (also in ../ScryfallSearchKit-backup-2026-11-12.zip)
+OldSources/
+OldTests/
