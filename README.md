@@ -28,3 +28,13 @@ Live tests check that `parse(q).queryString` returns the same number of cards fr
 ```bash
 SCRYFALL_LIVE_TESTS=1 swift test --filter LiveScryfallTests
 ```
+
+## Offline search
+
+The package has no dependency on Scryfall's servers, so a token tree can be evaluated against a local copy of the card database:
+
+- `token.matches(card) { term, card in … }` evaluates in memory. Your closure handles each leaf term (`.type`, `.stats`, …) and returns `nil` for unsupported ones, which makes the whole result `nil` so you can fall back to an online search instead of returning wrong results.
+- `token.translated(with: myTranslator)` builds a storage query (an `NSPredicate`, SwiftData `Predicate`, SQL, …) from a `ScryfallSearchTokenTranslator`. The package handles AND/OR/NOT/parentheses; the translator only handles leaves.
+- `token.directives` returns `unique:`, `include:` and `prefer:`, which change how results are returned rather than which cards match. Both evaluation paths skip them.
+
+Parse in strict mode (the default) for offline search, so unknown syntax fails up front instead of becoming an opaque `.direct` query.
